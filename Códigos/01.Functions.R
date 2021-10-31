@@ -117,7 +117,7 @@ formatando_texto<-function(data){
         str_replace_all("000No Mínimo Uma Vez a Cada 10 Dias [(]Pelo Menos Uma Vez a Cada 10 Dias[)]","06-No Mínimo Uma Vez a Cada 10 Dias (Pelo Menos Uma Vez A Cada 10 Dias)")%>%
         str_replace_all("000No Mínimo Uma Vez por Semana [(]Pelo Menos Uma Vez Por Semana[)]","05-No Mínimo Uma Vez Por Semana (Pelo Menos Uma Vez Por Semana)")%>%
         str_replace_all("000No Mínimo Uma Vez por Mês [(]Pelo Menos Uma Vez Por Mês[)]","08-No Mínimo Uma Vez Por Mês (Pelo Menos Uma Vez Por Mês)")
-
+      
     }
     if(i==12){
       data[[i]]<-data[[i]]%>%
@@ -243,6 +243,70 @@ frequencia_simples<-function(data,variavel,nome_variavel,subcapion,tipo){
     return(a)
   }
 }
+#Tabela de Frequência Duas variáveis
+tabela2<-function(data,simples){
+  nomes<-colnames(data)[-1]
+  i<-2
+  while(i<=ncol(data)){
+    colnames(data)[i]<-c("Frequência")
+    i<-i+1
+    colnames(data)[i]<-c("(%)")
+    i<-i+1
+  }
+  #Tabela personalizada para P021_1 devido ao "add_header_above"
+  tabela(data,simples,": Supermercado principal (%)")%>%
+    add_header_above(c("-" = 1, "Concorrente" = 2, "Principal" = 2),bold = T,
+                     background=c("#D1D1D1"),align = "c")
+}
+frequencia_duas_cat<-function(data,variavel1,nome_variavel1,tipo){
+  #Farei apenas para P021_1 por causa da tabela, mas essa função faz livre
+  variavel2<-c("P021_1")
+  nome_variavel2<-c("Supermercado principal (%)")
+  #Frequência
+  a<-as.table(ftable(cbind(data[variavel1],data[variavel2])))
+  #(%) Por coluna
+  percents_col<-colPercents(a,digits=1)[-c(nrow(a)+1,nrow(a)+2),]
+  #Arrumando do jeito que quero imprimir
+  b<-matrix(nrow = nrow(a),ncol =ncol(a)*2+1)
+  i<-2;j<-1
+  while(i<=ncol(a)*2+1){
+    b[,i]<-a[,j]
+    i<-i+1
+    b[,i]<-percents_col[,j]
+    i<-i+1;j<-j+1
+  }
+  b<-data.frame(apply(b, 2,as.numeric))
+  
+  #Colocando a primeira coluna com os nomes
+  b[,1]<-str_sub(row.names(a), start = 4)
+  #Nome das colunas
+  colnames(b)[1]<-nome_variavel1
+  i<-2;j<-1
+  while(i<=ncol(a)*2+1){
+    colnames(b)[i]<-str_sub(colnames(a)[j],start=4)
+    i<-i+1
+    colnames(b)[i]<-paste0(str_sub(colnames(a)[j],start=4),"(%)")
+    i<-i+1;j<-j+1
+  }
+  #Totais
+  b<-rbind(b,c("TOTAL",round(colSums(b[,-1]))))
+  rm(a,i,j,percents_col)
+  #tabela personalizada
+  #tabela personalizada
+  if(tipo==1){
+    return(tabela2(b,T))
+  }
+  if(tipo==2){
+    return(tabela2(b,F))
+  }
+  if(tipo==3){
+    return(b)
+  }
+  #print(tabela2(b,T))
+  #print(tabela2(b,F))
+  #imprimindo a tabela simples
+  #print(b)
+} 
 #Formatando a tabela para os gráficos de perfil####
 tabela_como_quero<-function(var,nome){
   a<-frequencia_simples(dados_mod,var,nome,"",3)
