@@ -56,13 +56,15 @@ formatando_texto<-function(data){
       str_replace("a Vista","à Vista")%>%
       str_replace("Créditoto","Crédito")%>%
       str_replace("Alimentacao","Alimentação")%>%
-      str_replace("(As)","(as)")%>%
       str_replace("Pre-Datado","Pré-Datado")%>%
       str_replace("Tiquete","Tíquete")%>%
       str_replace("^$","NA")%>%
       str_replace("^Nr$","NA")%>%
       str_replace("^Ns$","NA")%>%
       str_replace("^Nsa$","NA")%>%
+      str_replace(" Supermerc. "," Supermercado ")%>%
+      str_replace("Pessimo","Péssimo")%>%
+      str_replace("Otimo","Ótimo")%>%
       
       str_replace("^<NA>$","NA")
     na_if(data[[i]], "NA")
