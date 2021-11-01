@@ -13,13 +13,9 @@ Genero<-tabela_como_quero("P012",funcao_label("P012"))
 #P013
 Idade<-tabela_como_quero("P013",funcao_label("P013"))
 
-##Gráficos de barra sendo salvos na pasta####
-salvar_graficos_png(Renda,"Renda")
-salvar_graficos_png(Grau,"Escolaridade")
-salvar_graficos_png(Genero,"Gênero")
-salvar_graficos_png(Idade,"Idade")
-##Gráficos de piza salvos manualmente (erro ao instalar orca)
+##Gráficos de piza e barra sendo salvos
 salvar_graficos_plotly_png(Renda,"Renda2")
 salvar_graficos_plotly_png(Grau,"Escolaridade2")
 salvar_graficos_plotly_png(Genero,"Gênero2")
 salvar_graficos_plotly_png(Idade,"Idade2")
+

@@ -315,9 +315,11 @@ tabela_como_quero<-function(var,nome){
   a
 }
 #Gráfico de barras
-grafico_barra<-function(data){
+grafico_barra<-function(data,tipo){
   legenda<-paste0(data$Frequência," (",round(as.numeric(data$`(%)`),2),"%)")
-  data%>%
+  if(tipo=="ggplot"){
+    
+  p<-data%>%
     ggplot(aes(x=`Frequência`, y=reorder(data[,1], -`Frequência`),label=legenda)) +
     geom_bar(stat="identity", fill="steelblue")+
     #geom_text(aes(label=legenda),hjust=0, vjust=-0, size=3.5)+
@@ -329,13 +331,25 @@ grafico_barra<-function(data){
           axis.text.y = element_text(colour = "#373737",face = "bold",size=16),
           plot.title = element_text(hjust = 0.5,colour = "black",face = "bold",size=24))+
     geom_text(hjust = 0, nudge_x = 0.05,fontface = "bold",colour ="#7C7979",size=6)
+  p
+  }
+  if(tipo=="plotly"){
+    plot_ly(data, y = data[,1], x = as.numeric(data[,2]), type = 'bar', name = 'Concorrente', marker = list(color = 'rgb(49,130,189)')
+            ,orientation = 'h',text = legenda, textposition = 'auto',
+            marker = list(color = 'rgb(158,202,225)',
+                          line = list(color = 'rgb(8,48,107)', width = 1.5)))%>% 
+      layout(title = colnames(data)[1],
+             xaxis = list(title = "Frequência", tickangle = -45),
+             yaxis = list(title = ""),
+             margin = list(b = 100))
+  }
 }
 
 #Salvar Gráfico como png
 salvar_graficos_png<-function(data,nome){
   png(paste0(file="F:/Teste de seleção para vaga Analista R Pleno Innovare/Teste-de-sele-o-para-vaga-Analista-R-Pleno-Innovare/Gráficos/",nome,".png"),
       width = 966, height = 343)
-  print(grafico_barra(data))
+  print(grafico_barra(data,"ggplot"))
   dev.off()
 }
 #Gráfico pie
@@ -348,9 +362,13 @@ grafico_pie<-function(data){
 #Salvar gráfico plotly com png
 salvar_graficos_plotly_png<-function(data,nome){
   a<-grafico_pie(data)
-  a
   saveWidget(a, "temp.html")
   webshot("temp.html",vwidth = 698,vheight = 373,
-          paste0("F:/Teste de seleção para vaga Analista R Pleno Innovare/Teste-de-sele-o-para-vaga-Analista-R-Pleno-Innovare/Gráficos/",nome,".png")
+          paste0("F:/Teste de seleção para vaga Analista R Pleno Innovare/Teste-de-sele-o-para-vaga-Analista-R-Pleno-Innovare/Gráficos/",nome,"Pie Plotly.png")
+  )
+  a<-grafico_barra(data,"plotly")
+  saveWidget(a, "temp.html")
+  webshot("temp.html",vwidth = 698,vheight = 373,
+          paste0("F:/Teste de seleção para vaga Analista R Pleno Innovare/Teste-de-sele-o-para-vaga-Analista-R-Pleno-Innovare/Gráficos/",nome,"Bar Plotly.png")
   )
 }

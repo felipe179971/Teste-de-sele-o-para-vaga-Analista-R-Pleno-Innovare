@@ -8,4 +8,3 @@ label$variavel<-str_sub(label$variavel,start = 4)
 label$label<-str_sub(label$label,start = 4)
 
 
-
